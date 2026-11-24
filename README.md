@@ -1,5 +1,3 @@
-> **Updated iteration (Nov 23, 2026):** Read `docs/V2_IMPROVEMENTS_AND_VALIDATION.md` for the custom chart sizing fix, zero-rate display, unsampled scatter, month-gap logic, and manual test checklist. The authentic UCI CSV is bundled. The fixes pass nine data tests and syntax checks but still require a browser-level verification on your machine.
-
 # Conversion Forkprint — Online Shopping Conversion Analytics
 
 A course-oriented, upload-driven **Dash** analytics web app with **three Plotly charts** and **one bespoke D3 + React Dash component**. Designed for e-commerce conversion analysts using the [UCI Online Shoppers Purchasing Intention Dataset](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset).
@@ -97,9 +95,6 @@ The data tests verify schema validation, filter behavior, and preservation of to
 
 If the CDN is blocked, download a genuine D3 v7 file into `assets/d3.v7.min.js` and remove `external_scripts` from the `Dash(...)` constructor (avoid loading D3 twice).
 
-## Course submission still required
-
-This archive contains the **application implementation**, source files, and reporting guidance. It **does not** contain a final IEEE report PDF, a deployed live app URL, or an actual GitHub repository URL, because those need your team names, reviewed findings, and deployment. The full assignment separately requires a **3–5 page IEEE double-column report**, a **6–8 minute presentation**, and equal contributions among three team members.
 
 ## Dataset citation
 
