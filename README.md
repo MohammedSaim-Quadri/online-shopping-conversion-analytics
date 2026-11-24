@@ -2,6 +2,19 @@
 
 A course-oriented, upload-driven **Dash** analytics web app with **three Plotly charts** and **one bespoke D3 + React Dash component**. Designed for e-commerce conversion analysts using the [UCI Online Shoppers Purchasing Intention Dataset](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset).
 
+## Live Application
+
+**Dashboard:** https://conversion-forkprint.onrender.com/
+
+**GitHub Repository:** https://github.com/MohammedSaim-Quadri/online-shopping-conversion-analytics
+
+The application is publicly hosted on Render. Users can explore the
+bundled UCI dataset or upload a compatible CSV to regenerate the
+visualizations.
+
+Note: The Render free-tier service may take additional time to start
+after a period of inactivity.
+
 
 ## Quick start — Windows PowerShell
 
@@ -31,7 +44,11 @@ python app.py
 
 1. Upload a valid CSV with the 18 original UCI columns. All four visualizations and KPI values are recalculated from the uploaded rows.
 2. Filter by visitor type, month, and day type; these are independent controls and trigger Python Dash callbacks.
-3. Hover any Plotly chart for detailed information; the scatter chart is sampled for responsiveness and the displayed axes are clipped to the 99th-percentile duration range, although counts and other charts still use **all selected rows**.
+3. Hover over the Plotly charts for detailed information. The scatter
+   plot includes all filtered sessions, with no sampling. Users can
+   switch between a 99th-percentile duration zoom (default) and the
+   full duration range. The zoom only changes the visible x-axis
+   range; it does not remove records from the calculations.
 4. Click a custom Forkprint glyph: its selected traffic-source/visitor-type combination filters **all three Plotly charts and KPI cards**, while the Forkprint continues to show the wider context. Click again or use **Clear fork selection**.
 5. If a selection has no data, the charts display an explicit empty state.
 
@@ -44,15 +61,45 @@ python app.py
 | 3   | Line                                | How does the observed conversion rate vary across recorded months?                                                | Hover, shared filters                                            |
 | 4   | **Conversion Forkprint** (D3/React) | Which _traffic-source × visitor-type_ combinations show high purchase rates, and how much evidence supports each? | Click fork => updates other charts, tooltips, keyboard selection |
 
+### Interpreting the Monthly Chart
+
+The monthly chart displays conversion rates for months represented
+in the selected data.
+
+- Line breaks indicate months without recorded sessions.
+- A value of 0% indicates that sessions occurred but none resulted
+  in a purchase.
+- Tooltips display the number of sessions, purchases, and observed
+  conversion rate.
+- Months with fewer than 30 sessions are flagged for cautious
+  interpretation.
+
+The dataset does not contain full calendar timestamps or years.
+Therefore, this visualization represents month-aggregated
+comparisons rather than a continuous multi-year time series.
+
 ## Custom chart originality and limitations
 
-- One row per traffic source; one column per visitor type (keys).
-- A glyph is a _fork stem_ with two separate tips (marks).
-- The upper teal branch deflects upward based on **purchase fraction** `r = purchases/sessions`: `4 + 26r` SVG units.
-- The lower amber branch deflects downward based on **nonpurchase fraction** `1-r`: `4 + 26(1-r)` units.
-- Shared stem thickness is proportional to **sqrt(number of sessions)**, preventing large groups from visually overwhelming small groups.
-- Numerical conversion percentages and tooltips convey exact values; the visual glyph offers quick multivariate comparison.
-- Selecting one fork creates a browser-to-Python `setProps` event, and Dash callbacks update three distinct standard charts.
+- Rows represent traffic sources (`TrafficType`), and fixed columns
+  represent visitor categories (`VisitorType`).
+- Each traffic-source/visitor-type combination is represented by a
+  custom branching glyph.
+- The upper teal branch represents the observed purchase fraction
+  `r = purchases / sessions`, with vertical deflection `25 × r`
+  SVG units.
+- The lower amber branch represents the non-purchase fraction
+  `1 - r`, with vertical deflection `25 × (1 - r)` SVG units.
+- Branches representing zero observed outcomes are omitted.
+- Stem thickness uses square-root scaling of session count,
+  referenced against the maximum group volume in the uploaded
+  dataset to preserve comparability across filters.
+- Each glyph displays its conversion percentage and exact
+  purchase/session counts.
+- Groups with fewer than 30 sessions receive a low-sample warning.
+- Glyph columns have fixed dimensions, with scrolling available
+  when needed.
+- Clicking or keyboard-activating a glyph filters the other
+  three Plotly charts and the dashboard KPIs.
 
 This is a **proposed composite encoding**, not a globally verified claim that no previous researcher has ever used fork glyphs. It intentionally combines grouped comparison, bifurcation geometry, and a volume cue in a distinctive way. A potential issue is that proportional fork deflection may be less immediately familiar than a bar; the numerical labels and explicit legend are therefore necessary.
 

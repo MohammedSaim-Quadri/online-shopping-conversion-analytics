@@ -28,4 +28,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
-docs
+# Keep internal iteration notes out of the public repository
+docs/REQUIREMENTS_AUDIT.md
+docs/V2_IMPROVEMENTS_AND_VALIDATION.md
