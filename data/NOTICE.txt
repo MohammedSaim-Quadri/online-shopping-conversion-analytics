@@ -1,0 +1,11 @@
+AUTHENTIC DATA INCLUDED
+
+The file online_shoppers_intention.csv in this directory was extracted unchanged
+from the user-provided archive online+shoppers+purchasing+intention+dataset.zip.
+12,330 rows; 18 columns; 1,908 purchasing sessions; zero missing cells.
+
+UCI Machine Learning Repository: Online Shoppers Purchasing Intention Dataset
+https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset
+DOI: https://doi.org/10.24432/C5F88Q
+UCI displays the dataset license as Creative Commons Attribution 4.0 (CC BY 4.0).
+Preserve attribution and license notice when redistributing.
