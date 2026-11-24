@@ -2,11 +2,6 @@
 
 A course-oriented, upload-driven **Dash** analytics web app with **three Plotly charts** and **one bespoke D3 + React Dash component**. Designed for e-commerce conversion analysts using the [UCI Online Shoppers Purchasing Intention Dataset](https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset).
 
-## Verified dataset and project status
-
-**This revision includes the actual UCI CSV provided by the team**, replacing the earlier synthetic demonstration. The authentic file contains 12,330 sessions, 18 columns and 1,908 purchasing sessions (15.47%). There are no missing values; the source covers ten distinct month labels. All default dashboard data is loaded from `data/online_shoppers_intention.csv` and all visualizations are computed from the active dataset, including uploaded replacements.
-
-This is a functional source-code prototype with data-processing tests. **The full Dash browser interface, deployment, and professor acceptance of the original visual idiom have not been verified in this environment.** Read `docs/REQUIREMENTS_AUDIT.md` before claiming submission readiness.
 
 ## Quick start — Windows PowerShell
 
@@ -51,8 +46,6 @@ python app.py
 
 ## Custom chart originality and limitations
 
-The professor's interpretation is **stronger than the written rubric**: it asks for a proposed **new visual idiom**, not merely a standard heatmap implemented in custom code. Therefore this submission **does not use the earlier heatmap as the custom diagram**. It proposes the **Conversion Forkprint**, a small-multiple visual grammar of branching glyphs:
-
 - One row per traffic source; one column per visitor type (keys).
 - A glyph is a _fork stem_ with two separate tips (marks).
 - The upper teal branch deflects upward based on **purchase fraction** `r = purchases/sessions`: `4 + 26r` SVG units.
@@ -61,7 +54,7 @@ The professor's interpretation is **stronger than the written rubric**: it asks 
 - Numerical conversion percentages and tooltips convey exact values; the visual glyph offers quick multivariate comparison.
 - Selecting one fork creates a browser-to-Python `setProps` event, and Dash callbacks update three distinct standard charts.
 
-This is a **proposed composite encoding**, not a globally verified claim that no previous researcher has ever used fork glyphs. It intentionally combines grouped comparison, bifurcation geometry, and a volume cue in a distinctive way. It should be **shown to the professor for acceptance** before claiming the originality requirement is completely fulfilled. A potential issue is that proportional fork deflection may be less immediately familiar than a bar; the numerical labels and explicit legend are therefore necessary.
+This is a **proposed composite encoding**, not a globally verified claim that no previous researcher has ever used fork glyphs. It intentionally combines grouped comparison, bifurcation geometry, and a volume cue in a distinctive way. A potential issue is that proportional fork deflection may be less immediately familiar than a bar; the numerical labels and explicit legend are therefore necessary.
 
 **No causal inference:** conversion is the sample proportion of sessions whose `Revenue` field is true, not a measured intervention effect. `PageValues` can be associated with revenue and should not be interpreted as an independent causal predictor. The source does not contain calendar years or a timestamp; a line across named months is **month-aggregate seasonal comparison**, not a longitudinal time-series trend.
 
@@ -83,7 +76,7 @@ python -m pytest -q
 node --check shopper_custom/forkprint.js    # optional: if Node.js installed
 ```
 
-The data tests verify schema validation, filter behavior, and preservation of total session/purchase counts in glyph aggregation. **The project was not browser-integration-tested in its authoring environment**, so validate it against the genuine UCI file on your own computer before submitting.
+The data tests verify schema validation, filter behavior, and preservation of total session/purchase counts in glyph aggregation.
 
 ## Deploy on Render
 
@@ -92,9 +85,6 @@ The data tests verify schema validation, filter behavior, and preservation of to
 3. Create a Render web service from the repository, or use `render.yaml` as a Blueprint.
 4. Build command: `pip install -r requirements.txt`; start: `gunicorn app:server --bind 0.0.0.0:$PORT`.
 5. Visit the actual public URL, verify all four charts and CSV upload, click a fork, then refresh from an anonymous browser before submitting. Free-tier hosting may sleep.
-
-If the CDN is blocked, download a genuine D3 v7 file into `assets/d3.v7.min.js` and remove `external_scripts` from the `Dash(...)` constructor (avoid loading D3 twice).
-
 
 ## Dataset citation
 
