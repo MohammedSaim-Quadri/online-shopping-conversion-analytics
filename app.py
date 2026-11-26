@@ -7,7 +7,7 @@ import numpy as np
 import plotly.graph_objects as go
 from dash import Dash, dcc, html, Input, Output, State, no_update
 from shopper_custom import ConversionForkprint
-from data_utils import normalize, parse_upload, filter_data, summary, fork_data, MONTHS
+from data_utils import normalize, parse_upload, filter_data, summary, fork_data, MONTHS, LABELS
 
 BASE = pathlib.Path(__file__).resolve().parent
 DATAFILE = BASE/'data'/'online_shoppers_intention.csv'
@@ -194,15 +194,40 @@ def update(data, visitors, months, day, selected, axis_mode):
         return '0', '0', '0.0%', blank('No selected sessions'), blank('No selected sessions'), blank('No selected sessions'), glyphs, select_label, 'No sessions match this combination.', 'No matching visitor sessions', 'No matching browsing sessions', 'No matching monthly sessions'
     by = chart_df.groupby('VisitorType')['Revenue'].agg(
         ['mean', 'size']).sort_values('mean')
+    
     bar = figure_base()
-    bar.add_trace(go.Bar(x=by['mean']*100, y=by.index, orientation='h',
-                         marker_color=TEAL, customdata=np.stack(
-                             [by['size'].values], axis=1),
-                         hovertemplate='%{y}<br>Conversion: %{x:.1f}%<br>Sessions: %{customdata[0]:,}<extra></extra>'))
-    bar.update_layout(yaxis_title=None,
-                      xaxis_title='Purchasing sessions (%)', showlegend=False)
+
+    display_labels = [
+        LABELS.get(visitor, visitor)
+        for visitor in by.index
+    ]
+
+    bar.add_trace(
+        go.Bar(
+            x=by['mean'] * 100,
+            y=display_labels,
+            orientation='h',
+            marker_color=TEAL,
+            customdata=np.stack([by['size'].values], axis=1),
+            hovertemplate=(
+                '%{y}<br>'
+                'Conversion: %{x:.1f}%<br>'
+                'Sessions: %{customdata[0]:,}'
+                '<extra></extra>'
+            )
+        )
+    )
+
+    bar.update_layout(
+        yaxis_title=None,
+        xaxis_title='Purchasing sessions (%)',
+        showlegend=False
+    )
+
     bar.update_xaxes(
-        range=[0, max(5, float(by['mean'].max()*100)*1.25)], ticksuffix='%')
+        range=[0, max(5, float(by['mean'].max() * 100) * 1.25)],
+        ticksuffix='%'
+    )
     # Show every point (Scattergl supports this size); changing the x-axis alters only
     # viewport, not the data, and makes any points outside the zoom explicit.
     scatter_df = chart_df
@@ -289,7 +314,45 @@ def update(data, visitors, months, day, selected, axis_mode):
         bar_title = f'{labels.get(leader, leader).capitalize()} have the highest observed conversion in this selection'
     else:
         bar_title = 'Observed conversion for the selected visitor group'
-    scatter_title = 'Session engagement spans a wide range of exit rates'
+
+    # Use a takeaway title only when the current filtered data supports it.
+    if len(scatter_df) >= 100 and duration.nunique() >= 5:
+        duration_groups = pd.qcut(
+            duration,
+            q=5,
+            labels=False,
+            duplicates='drop'
+        )
+
+        comparison = (
+            scatter_df.assign(duration_group=duration_groups)
+            .groupby('duration_group')
+            .agg(
+                conversion=('Revenue', 'mean'),
+                exit_rate=('ExitRates', 'mean'),
+                sessions=('Revenue', 'size')
+            )
+            .sort_index()
+        )
+
+        shortest = comparison.iloc[0]
+        longest = comparison.iloc[-1]
+
+        if (
+            len(comparison) >= 2
+            and longest['conversion'] > shortest['conversion']
+            and longest['exit_rate'] < shortest['exit_rate']
+        ):
+            scatter_title = (
+                'Longer product browsing is associated with '
+                'fewer exits and more purchases'
+            )
+        else:
+            scatter_title = (
+                'Browsing duration shows varying exit and purchase patterns'
+            )
+    else:
+        scatter_title = 'Browsing outcomes in the selected sessions'
     valid_months = monthly.dropna(subset=['mean'])
 
     if len(valid_months) > 1:

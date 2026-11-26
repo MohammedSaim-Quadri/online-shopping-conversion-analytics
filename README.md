@@ -44,11 +44,12 @@ python app.py
 
 1. Upload a valid CSV with the 18 original UCI columns. All four visualizations and KPI values are recalculated from the uploaded rows.
 2. Filter by visitor type, month, and day type; these are independent controls and trigger Python Dash callbacks.
-3. Hover over the Plotly charts for detailed information. The scatter
-   plot includes all filtered sessions, with no sampling. Users can
-   switch between a 99th-percentile duration zoom (default) and the
-   full duration range. The zoom only changes the visible x-axis
-   range; it does not remove records from the calculations.
+3. Hover over Plotly charts for detailed information. The scatter
+   chart includes all filtered sessions using Plotly Scattergl,
+   without sampling. The default 99th-percentile duration zoom
+   changes only the visible x-axis window; users can switch to
+   Full range to inspect outliers. No sessions are removed from
+   the underlying calculations.
 4. Click a custom Forkprint glyph: its selected traffic-source/visitor-type combination filters **all three Plotly charts and KPI cards**, while the Forkprint continues to show the wider context. Click again or use **Clear fork selection**.
 5. If a selection has no data, the charts display an explicit empty state.
 
@@ -84,18 +85,20 @@ comparisons rather than a continuous multi-year time series.
   represent visitor categories (`VisitorType`).
 - Each traffic-source/visitor-type combination is represented by a
   custom branching glyph.
-- The upper teal branch represents the observed purchase fraction
-  `r = purchases / sessions`, with vertical deflection `25 × r`
-  SVG units.
-- The lower amber branch represents the non-purchase fraction
-  `1 - r`, with vertical deflection `25 × (1 - r)` SVG units.
-- Branches representing zero observed outcomes are omitted.
-- Stem thickness uses square-root scaling of session count,
-  referenced against the maximum group volume in the uploaded
-  dataset to preserve comparability across filters.
-- Each glyph displays its conversion percentage and exact
-  purchase/session counts.
-- Groups with fewer than 30 sessions receive a low-sample warning.
+- The upper teal branch deflects upward according to the
+  purchase fraction `r = purchases / sessions`,
+  using `25 × r` SVG units.
+- The lower amber branch deflects downward according to the
+  non-purchase fraction `1 - r`,
+  using `25 × (1 - r)` SVG units.
+- Branches are omitted when their corresponding outcome count
+  is zero.
+- Stem thickness uses square-root scaling, referenced against
+  the maximum traffic-source/visitor-type group volume in the
+  uploaded dataset, preserving comparability across filters.
+- Exact purchase/session counts and conversion percentages
+  are shown. Groups with fewer than 30 sessions are marked
+  `low n`.
 - Glyph columns have fixed dimensions, with scrolling available
   when needed.
 - Clicking or keyboard-activating a glyph filters the other
